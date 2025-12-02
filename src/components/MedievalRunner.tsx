@@ -21,6 +21,7 @@ interface GameState {
   isPlaying: boolean;
   isGameOver: boolean;
   highScore: number;
+  killerMeme: string | null;
 }
 
 const MedievalRunner = () => {
@@ -31,6 +32,7 @@ const MedievalRunner = () => {
     isPlaying: false,
     isGameOver: false,
     highScore: 0,
+    killerMeme: null,
   });
 
   // Initialize audio
@@ -305,6 +307,11 @@ const MedievalRunner = () => {
     memeTextures.current = memeImages.map(img => textureLoader.load(img));
   }, []);
 
+  const memeImages = [
+    boromirImg, ancientAliensImg, spongebobVikingImg, rollSafeImg, confusedKnightImg,
+    bernieVikingImg, fryKnightImg, knightWojakImg, vikingWomanImg, vikingGuyImg
+  ];
+
   const createObstacle = useCallback(() => {
     if (!gameRef.current) return;
 
@@ -327,7 +334,8 @@ const MedievalRunner = () => {
     });
     
     // Random meme texture for front face
-    const memeTexture = memeTextures.current[Math.floor(Math.random() * memeTextures.current.length)];
+    const memeIndex = Math.floor(Math.random() * memeTextures.current.length);
+    const memeTexture = memeTextures.current[memeIndex];
     const frontMaterial = new THREE.MeshStandardMaterial({
       map: memeTexture,
       roughness: 0.5,
@@ -345,6 +353,8 @@ const MedievalRunner = () => {
     ];
     
     const obstacle = new THREE.Mesh(geometry, materials);
+    // Store the meme image URL on the obstacle for later reference
+    (obstacle as any).memeImageUrl = memeImages[memeIndex];
     
     // Add edge highlight for better visibility
     const edges = new THREE.EdgesGeometry(geometry);
@@ -476,12 +486,14 @@ const MedievalRunner = () => {
         Math.abs(obstacle.position.z - player.position.z) < 1 &&
         player.position.y < obstacle.geometry.parameters.height + 0.3
       ) {
-        // Game over
+        // Game over - capture the killer meme
+        const killerMemeUrl = (obstacle as any).memeImageUrl || null;
         setGameState(prev => ({
           ...prev,
           isPlaying: false,
           isGameOver: true,
           highScore: Math.max(prev.highScore, gameRef.current!.score),
+          killerMeme: killerMemeUrl,
         }));
         return;
       }
@@ -639,6 +651,16 @@ const MedievalRunner = () => {
             <h2 className="font-medieval text-4xl text-destructive mb-4">
               Quest Failed
             </h2>
+            {gameState.killerMeme && (
+              <div className="mb-4">
+                <p className="font-cinzel text-muted-foreground text-sm mb-2">Slain by:</p>
+                <img 
+                  src={gameState.killerMeme} 
+                  alt="Killer meme" 
+                  className="w-32 h-32 object-cover mx-auto rounded-lg border-2 border-primary/50 shadow-lg"
+                />
+              </div>
+            )}
             <p className="font-cinzel text-foreground text-xl mb-2">
               Final Score: <span className="text-primary">{gameState.score}</span>
             </p>
