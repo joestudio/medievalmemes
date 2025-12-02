@@ -1,6 +1,13 @@
 import { useEffect, useRef, useState, useCallback } from 'react';
 import * as THREE from 'three';
 
+// Import meme images
+import trollfaceImg from '@/assets/memes/trollface.jpg';
+import dogeImg from '@/assets/memes/doge.jpg';
+import foreverAloneImg from '@/assets/memes/forever-alone.jpg';
+import rageImg from '@/assets/memes/rage.jpg';
+import yunoImg from '@/assets/memes/yuno.jpg';
+
 interface GameState {
   score: number;
   isPlaying: boolean;
@@ -251,6 +258,15 @@ const MedievalRunner = () => {
     };
   }, []);
 
+  // Load meme textures
+  const memeTextures = useRef<THREE.Texture[]>([]);
+  
+  useEffect(() => {
+    const textureLoader = new THREE.TextureLoader();
+    const memeImages = [trollfaceImg, dogeImg, foreverAloneImg, rageImg, yunoImg];
+    memeTextures.current = memeImages.map(img => textureLoader.load(img));
+  }, []);
+
   const createObstacle = useCallback(() => {
     if (!gameRef.current) return;
 
@@ -260,18 +276,37 @@ const MedievalRunner = () => {
     const height = 0.9 + Math.random() * 0.7;
     const geometry = new THREE.BoxGeometry(width, height, 1);
     
-    // Brighter, more visible obstacle - dark red/brown stone blocks
+    // Base material for sides
     const obstacleColors = [0x8b4513, 0x7a3d10, 0x6b3510];
     const color = obstacleColors[Math.floor(Math.random() * obstacleColors.length)];
     
-    const material = new THREE.MeshStandardMaterial({
+    const sideMaterial = new THREE.MeshStandardMaterial({
       color: color,
       roughness: 0.7,
       metalness: 0.1,
       emissive: 0x331100,
       emissiveIntensity: 0.15,
     });
-    const obstacle = new THREE.Mesh(geometry, material);
+    
+    // Random meme texture for front face
+    const memeTexture = memeTextures.current[Math.floor(Math.random() * memeTextures.current.length)];
+    const frontMaterial = new THREE.MeshStandardMaterial({
+      map: memeTexture,
+      roughness: 0.5,
+      metalness: 0.1,
+    });
+    
+    // Materials array: [right, left, top, bottom, front, back]
+    const materials = [
+      sideMaterial, // right
+      sideMaterial, // left
+      sideMaterial, // top
+      sideMaterial, // bottom
+      frontMaterial, // front (facing player)
+      sideMaterial, // back
+    ];
+    
+    const obstacle = new THREE.Mesh(geometry, materials);
     
     // Add edge highlight for better visibility
     const edges = new THREE.EdgesGeometry(geometry);
