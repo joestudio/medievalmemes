@@ -7,6 +7,11 @@ import dogeImg from '@/assets/memes/doge.jpg';
 import foreverAloneImg from '@/assets/memes/forever-alone.jpg';
 import rageImg from '@/assets/memes/rage.jpg';
 import yunoImg from '@/assets/memes/yuno.jpg';
+import blueshirtGuyImg from '@/assets/memes/blueshirt-guy.jpg';
+import successKidImg from '@/assets/memes/success-kid.jpg';
+import badLuckBrianImg from '@/assets/memes/bad-luck-brian.jpg';
+import distractedBfImg from '@/assets/memes/distracted-bf.jpg';
+import futurameFryImg from '@/assets/memes/futurama-fry.jpg';
 
 interface GameState {
   score: number;
@@ -263,7 +268,10 @@ const MedievalRunner = () => {
   
   useEffect(() => {
     const textureLoader = new THREE.TextureLoader();
-    const memeImages = [trollfaceImg, dogeImg, foreverAloneImg, rageImg, yunoImg];
+    const memeImages = [
+      trollfaceImg, dogeImg, foreverAloneImg, rageImg, yunoImg,
+      blueshirtGuyImg, successKidImg, badLuckBrianImg, distractedBfImg, futurameFryImg
+    ];
     memeTextures.current = memeImages.map(img => textureLoader.load(img));
   }, []);
 
