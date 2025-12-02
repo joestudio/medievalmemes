@@ -1,6 +1,9 @@
 import { useEffect, useRef, useState, useCallback } from 'react';
 import * as THREE from 'three';
 
+// Import audio
+import castleOfScreamsAudio from '@/assets/audio/castle-of-screams.mp3';
+
 // Import meme images
 import boromirImg from '@/assets/memes/boromir.jpg';
 import ancientAliensImg from '@/assets/memes/ancient-aliens.jpg';
@@ -22,12 +25,39 @@ interface GameState {
 
 const MedievalRunner = () => {
   const containerRef = useRef<HTMLDivElement>(null);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
   const [gameState, setGameState] = useState<GameState>({
     score: 0,
     isPlaying: false,
     isGameOver: false,
     highScore: 0,
   });
+
+  // Initialize audio
+  useEffect(() => {
+    audioRef.current = new Audio(castleOfScreamsAudio);
+    audioRef.current.loop = true;
+    audioRef.current.volume = 0.5;
+    
+    return () => {
+      if (audioRef.current) {
+        audioRef.current.pause();
+        audioRef.current = null;
+      }
+    };
+  }, []);
+
+  // Control audio based on game state
+  useEffect(() => {
+    if (audioRef.current) {
+      if (gameState.isPlaying) {
+        audioRef.current.play().catch(console.error);
+      } else {
+        audioRef.current.pause();
+        audioRef.current.currentTime = 0;
+      }
+    }
+  }, [gameState.isPlaying]);
   
   const gameRef = useRef<{
     scene: THREE.Scene;
