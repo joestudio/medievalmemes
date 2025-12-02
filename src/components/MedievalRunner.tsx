@@ -706,22 +706,22 @@ const MedievalRunner = () => {
       {gameState.isPlaying && (
         <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex md:hidden items-center gap-4">
           <button
-            onTouchStart={(e) => { e.preventDefault(); moveLeft(); }}
-            onClick={moveLeft}
+            onTouchStart={(e) => { e.preventDefault(); e.stopPropagation(); moveLeft(); }}
+            onClick={(e) => { e.stopPropagation(); moveLeft(); }}
             className="w-16 h-16 rounded-full bg-primary/80 text-primary-foreground flex items-center justify-center text-2xl font-bold shadow-lg active:scale-95 transition-transform"
           >
             ←
           </button>
           <button
-            onTouchStart={(e) => { e.preventDefault(); jump(); }}
+            onTouchStart={(e) => { e.preventDefault(); e.stopPropagation(); jump(); }}
             onClick={(e) => { e.stopPropagation(); jump(); }}
             className="w-20 h-20 rounded-full bg-accent/80 text-accent-foreground flex items-center justify-center text-lg font-medieval shadow-lg active:scale-95 transition-transform"
           >
             JUMP
           </button>
           <button
-            onTouchStart={(e) => { e.preventDefault(); moveRight(); }}
-            onClick={moveRight}
+            onTouchStart={(e) => { e.preventDefault(); e.stopPropagation(); moveRight(); }}
+            onClick={(e) => { e.stopPropagation(); moveRight(); }}
             className="w-16 h-16 rounded-full bg-primary/80 text-primary-foreground flex items-center justify-center text-2xl font-bold shadow-lg active:scale-95 transition-transform"
           >
             →
