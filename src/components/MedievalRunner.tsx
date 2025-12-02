@@ -29,6 +29,7 @@ const MedievalRunner = () => {
     speed: number;
     animationId: number;
     score: number;
+    currentLane: number;
   } | null>(null);
 
   const initGame = useCallback(() => {
@@ -231,6 +232,7 @@ const MedievalRunner = () => {
       speed: 0.15,
       animationId: 0,
       score: 0,
+      currentLane: 1,
     };
 
     // Handle resize
@@ -323,6 +325,24 @@ const MedievalRunner = () => {
     gameRef.current.jumpVelocity = 0.25;
   }, []);
 
+  const moveLeft = useCallback(() => {
+    if (!gameRef.current) return;
+    const lanes = [-2, 0, 2];
+    if (gameRef.current.currentLane > 0) {
+      gameRef.current.currentLane--;
+      gameRef.current.player.position.x = lanes[gameRef.current.currentLane];
+    }
+  }, []);
+
+  const moveRight = useCallback(() => {
+    if (!gameRef.current) return;
+    const lanes = [-2, 0, 2];
+    if (gameRef.current.currentLane < 2) {
+      gameRef.current.currentLane++;
+      gameRef.current.player.position.x = lanes[gameRef.current.currentLane];
+    }
+  }, []);
+
   const startGame = useCallback(() => {
     if (!gameRef.current) {
       initGame();
@@ -337,6 +357,7 @@ const MedievalRunner = () => {
       gameRef.current.player.position.set(0, 0.6, 5);
       gameRef.current.speed = 0.15;
       gameRef.current.score = 0;
+      gameRef.current.currentLane = 1;
     }
     
     setGameState(prev => ({
@@ -465,6 +486,16 @@ const MedievalRunner = () => {
           startGame();
         }
       }
+      if (gameState.isPlaying) {
+        if (e.code === 'ArrowLeft' || e.code === 'KeyA') {
+          e.preventDefault();
+          moveLeft();
+        }
+        if (e.code === 'ArrowRight' || e.code === 'KeyD') {
+          e.preventDefault();
+          moveRight();
+        }
+      }
     };
 
     const handleClick = () => {
@@ -482,7 +513,7 @@ const MedievalRunner = () => {
       window.removeEventListener('keydown', handleKeyDown);
       window.removeEventListener('click', handleClick);
     };
-  }, [gameState.isPlaying, gameState.isGameOver, jump, startGame]);
+  }, [gameState.isPlaying, gameState.isGameOver, jump, startGame, moveLeft, moveRight]);
 
   return (
     <div className="relative w-full h-screen overflow-hidden bg-background">
@@ -511,9 +542,9 @@ const MedievalRunner = () => {
             <p className="font-cinzel text-foreground mb-2">
               Jump over obstacles, collect gems!
             </p>
-            <p className="font-cinzel text-muted-foreground text-sm mb-8">
-              Press SPACE or Click to jump
-            </p>
+          <p className="font-cinzel text-muted-foreground text-sm mb-8">
+            SPACE/Click to jump • A/D or ←/→ to move
+          </p>
             <button onClick={startGame} className="btn-medieval">
               Begin Quest
             </button>
@@ -547,7 +578,7 @@ const MedievalRunner = () => {
       {gameState.isPlaying && (
         <div className="absolute bottom-6 left-1/2 -translate-x-1/2">
           <p className="font-cinzel text-sm text-muted-foreground/60">
-            SPACE / Click to Jump
+            SPACE/Click: Jump • A/D or ←/→: Move
           </p>
         </div>
       )}
