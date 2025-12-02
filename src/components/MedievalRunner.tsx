@@ -4,6 +4,7 @@ import * as THREE from 'three';
 // Import audio
 import castleOfScreamsAudio from '@/assets/audio/castle-of-screams.mp3';
 import gemCollectedAudio from '@/assets/audio/gem-collected.mp3';
+import wilhelmScreamAudio from '@/assets/audio/wilhelm-scream.wav';
 
 // Import meme images
 import boromirImg from '@/assets/memes/boromir.jpg';
@@ -29,6 +30,7 @@ const MedievalRunner = () => {
   const containerRef = useRef<HTMLDivElement>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const gemSoundRef = useRef<HTMLAudioElement | null>(null);
+  const deathSoundRef = useRef<HTMLAudioElement | null>(null);
   const [gameState, setGameState] = useState<GameState>({
     score: 0,
     isPlaying: false,
@@ -46,6 +48,9 @@ const MedievalRunner = () => {
     gemSoundRef.current = new Audio(gemCollectedAudio);
     gemSoundRef.current.volume = 0.6;
     
+    deathSoundRef.current = new Audio(wilhelmScreamAudio);
+    deathSoundRef.current.volume = 0.7;
+    
     return () => {
       if (audioRef.current) {
         audioRef.current.pause();
@@ -53,6 +58,9 @@ const MedievalRunner = () => {
       }
       if (gemSoundRef.current) {
         gemSoundRef.current = null;
+      }
+      if (deathSoundRef.current) {
+        deathSoundRef.current = null;
       }
     };
   }, []);
@@ -494,7 +502,11 @@ const MedievalRunner = () => {
         Math.abs(obstacle.position.z - player.position.z) < 1 &&
         player.position.y < obstacle.geometry.parameters.height + 0.3
       ) {
-        // Game over - capture the killer meme
+        // Game over - capture the killer meme and play death sound
+        if (deathSoundRef.current) {
+          deathSoundRef.current.currentTime = 0;
+          deathSoundRef.current.play().catch(console.error);
+        }
         const killerMemeUrl = (obstacle as any).memeImageUrl || null;
         setGameState(prev => ({
           ...prev,
