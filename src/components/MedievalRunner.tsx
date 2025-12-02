@@ -622,11 +622,12 @@ const MedievalRunner = () => {
   }, [gameState.isPlaying, gameState.isGameOver, jump, startGame, moveLeft, moveRight]);
 
   return (
-    <div className="relative w-full h-screen overflow-hidden bg-background">
-      <div ref={containerRef} className="w-full h-full" />
-      
-      {/* Score UI */}
-      <div className="absolute top-6 left-6 game-ui">
+    <div className="w-full h-screen overflow-hidden bg-background flex flex-col md:block">
+      <div className="relative w-full aspect-square md:aspect-auto md:h-full">
+        <div ref={containerRef} className="w-full h-full" />
+        
+        {/* Score UI */}
+        <div className="absolute top-6 left-6 game-ui">
         <p className="font-medieval text-2xl text-primary text-shadow-torchlight">
           Score: {gameState.score}
         </p>
@@ -701,28 +702,29 @@ const MedievalRunner = () => {
           </p>
         </div>
       )}
+      </div>
 
       {/* Mobile Controls */}
       {gameState.isPlaying && (
-        <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex md:hidden items-center gap-4">
+        <div className="flex md:hidden items-center justify-center gap-6 py-8 flex-1">
           <button
             onTouchStart={(e) => { e.preventDefault(); e.stopPropagation(); moveLeft(); }}
             onClick={(e) => { e.stopPropagation(); moveLeft(); }}
-            className="w-16 h-16 rounded-full bg-primary/80 text-primary-foreground flex items-center justify-center text-2xl font-bold shadow-lg active:scale-95 transition-transform"
+            className="w-20 h-20 rounded-full bg-primary/80 text-primary-foreground flex items-center justify-center text-3xl font-bold shadow-lg active:scale-95 transition-transform"
           >
             ←
           </button>
           <button
             onTouchStart={(e) => { e.preventDefault(); e.stopPropagation(); jump(); }}
             onClick={(e) => { e.stopPropagation(); jump(); }}
-            className="w-20 h-20 rounded-full bg-accent/80 text-accent-foreground flex items-center justify-center text-lg font-medieval shadow-lg active:scale-95 transition-transform"
+            className="w-24 h-24 rounded-full bg-accent/80 text-accent-foreground flex items-center justify-center text-xl font-medieval shadow-lg active:scale-95 transition-transform"
           >
             JUMP
           </button>
           <button
             onTouchStart={(e) => { e.preventDefault(); e.stopPropagation(); moveRight(); }}
             onClick={(e) => { e.stopPropagation(); moveRight(); }}
-            className="w-16 h-16 rounded-full bg-primary/80 text-primary-foreground flex items-center justify-center text-2xl font-bold shadow-lg active:scale-95 transition-transform"
+            className="w-20 h-20 rounded-full bg-primary/80 text-primary-foreground flex items-center justify-center text-3xl font-bold shadow-lg active:scale-95 transition-transform"
           >
             →
           </button>
