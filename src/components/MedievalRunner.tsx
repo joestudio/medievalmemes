@@ -648,9 +648,12 @@ const MedievalRunner = () => {
             <p className="font-cinzel text-foreground mb-2">
               Jump over obstacles, collect gems!
             </p>
-          <p className="font-cinzel text-muted-foreground text-sm mb-8">
-            SPACE/Click to jump • A/D or ←/→ to move
-          </p>
+            <p className="font-cinzel text-muted-foreground text-sm mb-8 hidden md:block">
+              SPACE/Click to jump • A/D or ←/→ to move
+            </p>
+            <p className="font-cinzel text-muted-foreground text-sm mb-8 md:hidden">
+              Use the on-screen buttons to play
+            </p>
             <button onClick={startGame} className="btn-medieval">
               Begin Quest
             </button>
@@ -690,12 +693,39 @@ const MedievalRunner = () => {
         </div>
       )}
 
-      {/* Controls hint */}
+      {/* Controls hint - Desktop only */}
       {gameState.isPlaying && (
-        <div className="absolute bottom-6 left-1/2 -translate-x-1/2">
+        <div className="absolute bottom-6 left-1/2 -translate-x-1/2 hidden md:block">
           <p className="font-cinzel text-sm text-muted-foreground/60">
             SPACE/Click: Jump • A/D or ←/→: Move
           </p>
+        </div>
+      )}
+
+      {/* Mobile Controls */}
+      {gameState.isPlaying && (
+        <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex md:hidden items-center gap-4">
+          <button
+            onTouchStart={(e) => { e.preventDefault(); moveLeft(); }}
+            onClick={moveLeft}
+            className="w-16 h-16 rounded-full bg-primary/80 text-primary-foreground flex items-center justify-center text-2xl font-bold shadow-lg active:scale-95 transition-transform"
+          >
+            ←
+          </button>
+          <button
+            onTouchStart={(e) => { e.preventDefault(); jump(); }}
+            onClick={(e) => { e.stopPropagation(); jump(); }}
+            className="w-20 h-20 rounded-full bg-accent/80 text-accent-foreground flex items-center justify-center text-lg font-medieval shadow-lg active:scale-95 transition-transform"
+          >
+            JUMP
+          </button>
+          <button
+            onTouchStart={(e) => { e.preventDefault(); moveRight(); }}
+            onClick={moveRight}
+            className="w-16 h-16 rounded-full bg-primary/80 text-primary-foreground flex items-center justify-center text-2xl font-bold shadow-lg active:scale-95 transition-transform"
+          >
+            →
+          </button>
         </div>
       )}
     </div>
