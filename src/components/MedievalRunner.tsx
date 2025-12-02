@@ -634,8 +634,8 @@ const MedievalRunner = () => {
   }, [gameState.isPlaying, gameState.isGameOver, jump, startGame, moveLeft, moveRight]);
 
   return (
-    <div className="w-full h-screen overflow-hidden bg-background flex flex-col md:block">
-      <div className="relative w-full aspect-square md:aspect-auto md:h-full">
+    <div className="w-full h-screen overflow-hidden bg-background flex flex-col justify-center md:justify-start md:block">
+      <div className="relative w-full aspect-square md:aspect-auto md:h-full shrink-0">
         <div ref={containerRef} className="w-full h-full" />
         
         {/* Score UI */}
