@@ -3,6 +3,7 @@ import * as THREE from 'three';
 
 // Import audio
 import castleOfScreamsAudio from '@/assets/audio/castle-of-screams.mp3';
+import gemCollectedAudio from '@/assets/audio/gem-collected.mp3';
 
 // Import meme images
 import boromirImg from '@/assets/memes/boromir.jpg';
@@ -27,6 +28,7 @@ interface GameState {
 const MedievalRunner = () => {
   const containerRef = useRef<HTMLDivElement>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
+  const gemSoundRef = useRef<HTMLAudioElement | null>(null);
   const [gameState, setGameState] = useState<GameState>({
     score: 0,
     isPlaying: false,
@@ -41,10 +43,16 @@ const MedievalRunner = () => {
     audioRef.current.loop = true;
     audioRef.current.volume = 0.5;
     
+    gemSoundRef.current = new Audio(gemCollectedAudio);
+    gemSoundRef.current.volume = 0.6;
+    
     return () => {
       if (audioRef.current) {
         audioRef.current.pause();
         audioRef.current = null;
+      }
+      if (gemSoundRef.current) {
+        gemSoundRef.current = null;
       }
     };
   }, []);
@@ -518,6 +526,12 @@ const MedievalRunner = () => {
         gems.splice(index, 1);
         gameRef.current!.score += 10;
         setGameState(prev => ({ ...prev, score: gameRef.current!.score }));
+        
+        // Play gem collection sound
+        if (gemSoundRef.current) {
+          gemSoundRef.current.currentTime = 0;
+          gemSoundRef.current.play().catch(console.error);
+        }
       }
       
       // Remove passed gems
