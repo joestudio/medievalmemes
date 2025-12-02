@@ -241,7 +241,7 @@ const MedievalRunner = () => {
       gems: [],
       isJumping: false,
       jumpVelocity: 0,
-      speed: 0.15,
+      speed: 0.08,
       animationId: 0,
       score: 0,
       currentLane: 1,
@@ -398,7 +398,7 @@ const MedievalRunner = () => {
       gameRef.current.obstacles = [];
       gameRef.current.gems = [];
       gameRef.current.player.position.set(0, 0.6, 5);
-      gameRef.current.speed = 0.15;
+      gameRef.current.speed = 0.08;
       gameRef.current.score = 0;
       gameRef.current.currentLane = 1;
     }
