@@ -6,6 +6,9 @@ import castleOfScreamsAudio from '@/assets/audio/castle-of-screams.mp3';
 import gemCollectedAudio from '@/assets/audio/gem-collected.mp3';
 import wilhelmScreamAudio from '@/assets/audio/wilhelm-scream.wav';
 
+// Import character image
+import knightCharacter from '@/assets/knight-character.png';
+
 // Import meme images
 import boromirImg from '@/assets/memes/boromir.jpg';
 import ancientAliensImg from '@/assets/memes/ancient-aliens.jpg';
@@ -655,6 +658,11 @@ const MedievalRunner = () => {
       {!gameState.isPlaying && !gameState.isGameOver && (
         <div className="absolute inset-0 flex items-center justify-center bg-background/80 backdrop-blur-sm">
           <div className="text-center parchment-bg p-10 rounded-xl max-w-md">
+            <img 
+              src={knightCharacter} 
+              alt="Knight character" 
+              className="w-24 h-24 mx-auto mb-4 pixelated"
+            />
             <h1 className="font-medieval text-5xl text-primary text-shadow-torchlight mb-4">
               Medieval Meme Runner
             </h1>
