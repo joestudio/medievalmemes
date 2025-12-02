@@ -57,30 +57,74 @@ const MedievalRunner = () => {
     containerRef.current.innerHTML = '';
     containerRef.current.appendChild(renderer.domElement);
 
-    // Lighting - Torchlight ambiance
-    const ambientLight = new THREE.AmbientLight(0x3d2817, 0.4);
+    // Lighting - Brighter torchlight ambiance
+    const ambientLight = new THREE.AmbientLight(0x5a4030, 0.6);
     scene.add(ambientLight);
 
-    const torchLight1 = new THREE.PointLight(0xff8c42, 1.5, 20);
+    const torchLight1 = new THREE.PointLight(0xff8c42, 2, 25);
     torchLight1.position.set(-3, 4, 0);
     torchLight1.castShadow = true;
     scene.add(torchLight1);
 
-    const torchLight2 = new THREE.PointLight(0xff6b35, 1.5, 20);
+    const torchLight2 = new THREE.PointLight(0xff6b35, 2, 25);
     torchLight2.position.set(3, 4, 0);
     torchLight2.castShadow = true;
     scene.add(torchLight2);
 
-    const frontLight = new THREE.DirectionalLight(0xffd4a3, 0.5);
+    const frontLight = new THREE.DirectionalLight(0xffd4a3, 0.8);
     frontLight.position.set(0, 10, 10);
     scene.add(frontLight);
 
-    // Ground - Stone floor
-    const groundGeometry = new THREE.PlaneGeometry(8, 100, 8, 100);
+    // Create stone texture canvas
+    const createStoneTexture = (baseColor: number, size: number = 256) => {
+      const canvas = document.createElement('canvas');
+      canvas.width = size;
+      canvas.height = size;
+      const ctx = canvas.getContext('2d')!;
+      
+      // Base color
+      const r = (baseColor >> 16) & 255;
+      const g = (baseColor >> 8) & 255;
+      const b = baseColor & 255;
+      ctx.fillStyle = `rgb(${r}, ${g}, ${b})`;
+      ctx.fillRect(0, 0, size, size);
+      
+      // Add stone-like noise and variation
+      for (let i = 0; i < 800; i++) {
+        const x = Math.random() * size;
+        const y = Math.random() * size;
+        const radius = Math.random() * 8 + 2;
+        const variation = Math.random() * 40 - 20;
+        ctx.fillStyle = `rgb(${Math.min(255, Math.max(0, r + variation))}, ${Math.min(255, Math.max(0, g + variation))}, ${Math.min(255, Math.max(0, b + variation))})`;
+        ctx.beginPath();
+        ctx.arc(x, y, radius, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      
+      // Add cracks/lines
+      ctx.strokeStyle = `rgba(${r - 30}, ${g - 30}, ${b - 30}, 0.5)`;
+      ctx.lineWidth = 1;
+      for (let i = 0; i < 15; i++) {
+        ctx.beginPath();
+        ctx.moveTo(Math.random() * size, Math.random() * size);
+        ctx.lineTo(Math.random() * size, Math.random() * size);
+        ctx.stroke();
+      }
+      
+      const texture = new THREE.CanvasTexture(canvas);
+      texture.wrapS = THREE.RepeatWrapping;
+      texture.wrapT = THREE.RepeatWrapping;
+      return texture;
+    };
+
+    // Ground - Stone floor with texture
+    const floorTexture = createStoneTexture(0x6a5a48);
+    floorTexture.repeat.set(4, 50);
+    const groundGeometry = new THREE.PlaneGeometry(8, 100);
     const groundMaterial = new THREE.MeshStandardMaterial({
-      color: 0x4a4035,
-      roughness: 0.9,
-      metalness: 0.1,
+      map: floorTexture,
+      roughness: 0.85,
+      metalness: 0.05,
     });
     const ground = new THREE.Mesh(groundGeometry, groundMaterial);
     ground.rotation.x = -Math.PI / 2;
@@ -88,31 +132,69 @@ const MedievalRunner = () => {
     ground.receiveShadow = true;
     scene.add(ground);
 
-    // Stone pattern on ground
+    // Stone tile grid lines
     for (let i = 0; i < 50; i++) {
-      const lineGeometry = new THREE.PlaneGeometry(8, 0.05);
-      const lineMaterial = new THREE.MeshBasicMaterial({ color: 0x3a3025 });
+      const lineGeometry = new THREE.PlaneGeometry(8, 0.08);
+      const lineMaterial = new THREE.MeshBasicMaterial({ color: 0x2a2520 });
       const line = new THREE.Mesh(lineGeometry, lineMaterial);
       line.rotation.x = -Math.PI / 2;
       line.position.y = 0.01;
       line.position.z = -i * 2;
       scene.add(line);
     }
+    
+    // Vertical tile lines
+    for (let x = -3; x <= 3; x += 2) {
+      const vLineGeometry = new THREE.PlaneGeometry(0.06, 100);
+      const vLineMaterial = new THREE.MeshBasicMaterial({ color: 0x2a2520 });
+      const vLine = new THREE.Mesh(vLineGeometry, vLineMaterial);
+      vLine.rotation.x = -Math.PI / 2;
+      vLine.position.set(x, 0.01, -25);
+      scene.add(vLine);
+    }
 
-    // Walls
-    const wallGeometry = new THREE.BoxGeometry(0.5, 6, 100);
+    // Walls with rock texture
+    const wallTexture = createStoneTexture(0x5a4a3a);
+    wallTexture.repeat.set(2, 20);
+    const wallGeometry = new THREE.BoxGeometry(0.8, 6, 100);
     const wallMaterial = new THREE.MeshStandardMaterial({
-      color: 0x3d3428,
+      map: wallTexture,
       roughness: 0.95,
+      metalness: 0.02,
     });
 
     const leftWall = new THREE.Mesh(wallGeometry, wallMaterial);
-    leftWall.position.set(-4, 3, -25);
+    leftWall.position.set(-4.2, 3, -25);
     scene.add(leftWall);
 
     const rightWall = new THREE.Mesh(wallGeometry, wallMaterial);
-    rightWall.position.set(4, 3, -25);
+    rightWall.position.set(4.2, 3, -25);
     scene.add(rightWall);
+    
+    // Add torch holders on walls
+    const torchHolderGeometry = new THREE.CylinderGeometry(0.08, 0.1, 0.5, 8);
+    const torchMaterial = new THREE.MeshStandardMaterial({ color: 0x3d2817, metalness: 0.3 });
+    
+    for (let z = 0; z > -40; z -= 10) {
+      const leftTorch = new THREE.Mesh(torchHolderGeometry, torchMaterial);
+      leftTorch.position.set(-3.7, 3, z);
+      leftTorch.rotation.z = Math.PI / 6;
+      scene.add(leftTorch);
+      
+      const rightTorch = new THREE.Mesh(torchHolderGeometry, torchMaterial);
+      rightTorch.position.set(3.7, 3, z);
+      rightTorch.rotation.z = -Math.PI / 6;
+      scene.add(rightTorch);
+      
+      // Torch flame glow
+      const flameLight = new THREE.PointLight(0xff6622, 0.8, 8);
+      flameLight.position.set(-3.5, 3.3, z);
+      scene.add(flameLight);
+      
+      const flameLight2 = new THREE.PointLight(0xff6622, 0.8, 8);
+      flameLight2.position.set(3.5, 3.3, z);
+      scene.add(flameLight2);
+    }
 
     // Player - Knight-like block
     const playerGeometry = new THREE.BoxGeometry(0.8, 1.2, 0.8);
@@ -172,21 +254,33 @@ const MedievalRunner = () => {
 
     const { scene, obstacles } = gameRef.current;
     
-    const geometry = new THREE.BoxGeometry(
-      1 + Math.random() * 1.5,
-      0.8 + Math.random() * 0.8,
-      1
-    );
+    const width = 1.2 + Math.random() * 1.2;
+    const height = 0.9 + Math.random() * 0.7;
+    const geometry = new THREE.BoxGeometry(width, height, 1);
+    
+    // Brighter, more visible obstacle - dark red/brown stone blocks
+    const obstacleColors = [0x8b4513, 0x7a3d10, 0x6b3510];
+    const color = obstacleColors[Math.floor(Math.random() * obstacleColors.length)];
+    
     const material = new THREE.MeshStandardMaterial({
-      color: 0x5a4a3a,
-      roughness: 0.95,
+      color: color,
+      roughness: 0.7,
+      metalness: 0.1,
+      emissive: 0x331100,
+      emissiveIntensity: 0.15,
     });
     const obstacle = new THREE.Mesh(geometry, material);
+    
+    // Add edge highlight for better visibility
+    const edges = new THREE.EdgesGeometry(geometry);
+    const edgeMaterial = new THREE.LineBasicMaterial({ color: 0xaa6633, linewidth: 2 });
+    const edgeLines = new THREE.LineSegments(edges, edgeMaterial);
+    obstacle.add(edgeLines);
     
     const lanes = [-2, 0, 2];
     obstacle.position.set(
       lanes[Math.floor(Math.random() * lanes.length)],
-      geometry.parameters.height / 2,
+      height / 2,
       -40
     );
     obstacle.castShadow = true;
