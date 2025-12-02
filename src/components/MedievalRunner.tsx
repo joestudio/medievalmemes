@@ -580,7 +580,7 @@ const MedievalRunner = () => {
         <div className="absolute inset-0 flex items-center justify-center bg-background/80 backdrop-blur-sm">
           <div className="text-center parchment-bg p-10 rounded-xl max-w-md">
             <h1 className="font-medieval text-5xl text-primary text-shadow-torchlight mb-4">
-              Medieval Runner
+              Medieval Meme Runner
             </h1>
             <p className="font-cinzel text-foreground mb-2">
               Jump over obstacles, collect gems!
