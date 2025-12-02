@@ -517,8 +517,9 @@ const MedievalRunner = () => {
 
     // Spawn new obstacles and gems (with spacing check to prevent stacking)
     const minObstacleSpacing = 8;
-    const nearestObstacle = obstacles.reduce((nearest, obs) => 
-      obs.position.z < nearest ? obs.position.z : nearest, 0);
+    const nearestObstacle = obstacles.length > 0 
+      ? obstacles.reduce((nearest, obs) => obs.position.z < nearest ? obs.position.z : nearest, 0)
+      : -100; // Allow spawning when no obstacles exist
     
     if (Math.random() < 0.012 && obstacles.length < 4 && nearestObstacle < -minObstacleSpacing) {
       createObstacle();
