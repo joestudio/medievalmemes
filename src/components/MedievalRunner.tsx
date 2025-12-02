@@ -515,9 +515,15 @@ const MedievalRunner = () => {
       }
     });
 
-    // Spawn new obstacles and gems
-    if (Math.random() < 0.02) createObstacle();
-    if (Math.random() < 0.015) createGem();
+    // Spawn new obstacles and gems (with spacing check to prevent stacking)
+    const minObstacleSpacing = 8;
+    const nearestObstacle = obstacles.reduce((nearest, obs) => 
+      obs.position.z < nearest ? obs.position.z : nearest, 0);
+    
+    if (Math.random() < 0.012 && obstacles.length < 4 && nearestObstacle < -minObstacleSpacing) {
+      createObstacle();
+    }
+    if (Math.random() < 0.01) createGem();
 
     // Gradually increase speed
     gameRef.current.speed += 0.00002;
