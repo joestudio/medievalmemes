@@ -2,16 +2,16 @@ import { useEffect, useRef, useState, useCallback } from 'react';
 import * as THREE from 'three';
 
 // Import meme images
-import trollfaceImg from '@/assets/memes/trollface.jpg';
-import dogeImg from '@/assets/memes/doge.jpg';
-import foreverAloneImg from '@/assets/memes/forever-alone.jpg';
-import rageImg from '@/assets/memes/rage.jpg';
-import yunoImg from '@/assets/memes/yuno.jpg';
-import blueshirtGuyImg from '@/assets/memes/blueshirt-guy.jpg';
-import successKidImg from '@/assets/memes/success-kid.jpg';
-import badLuckBrianImg from '@/assets/memes/bad-luck-brian.jpg';
-import distractedBfImg from '@/assets/memes/distracted-bf.jpg';
-import futurameFryImg from '@/assets/memes/futurama-fry.jpg';
+import boromirImg from '@/assets/memes/boromir.jpg';
+import ancientAliensImg from '@/assets/memes/ancient-aliens.jpg';
+import spongebobVikingImg from '@/assets/memes/spongebob-viking.jpg';
+import rollSafeImg from '@/assets/memes/roll-safe.jpg';
+import confusedKnightImg from '@/assets/memes/confused-knight.jpg';
+import bernieVikingImg from '@/assets/memes/bernie-viking.jpg';
+import fryKnightImg from '@/assets/memes/fry-knight.jpg';
+import knightWojakImg from '@/assets/memes/knight-wojak.jpg';
+import vikingWomanImg from '@/assets/memes/viking-woman.jpg';
+import vikingGuyImg from '@/assets/memes/viking-guy.jpg';
 
 interface GameState {
   score: number;
@@ -269,8 +269,8 @@ const MedievalRunner = () => {
   useEffect(() => {
     const textureLoader = new THREE.TextureLoader();
     const memeImages = [
-      trollfaceImg, dogeImg, foreverAloneImg, rageImg, yunoImg,
-      blueshirtGuyImg, successKidImg, badLuckBrianImg, distractedBfImg, futurameFryImg
+      boromirImg, ancientAliensImg, spongebobVikingImg, rollSafeImg, confusedKnightImg,
+      bernieVikingImg, fryKnightImg, knightWojakImg, vikingWomanImg, vikingGuyImg
     ];
     memeTextures.current = memeImages.map(img => textureLoader.load(img));
   }, []);
