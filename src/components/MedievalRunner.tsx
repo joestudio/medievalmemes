@@ -721,22 +721,19 @@ const MedievalRunner = () => {
         <div className="flex md:hidden items-center justify-center gap-6 py-8 flex-1">
           <button
             onTouchStart={(e) => { e.preventDefault(); e.stopPropagation(); moveLeft(); }}
-            onClick={(e) => { e.stopPropagation(); moveLeft(); }}
-            className="w-20 h-20 rounded-full bg-primary/80 text-primary-foreground flex items-center justify-center text-3xl font-bold shadow-lg active:scale-95 transition-transform"
+            className="w-20 h-20 rounded-full bg-primary/80 text-primary-foreground flex items-center justify-center text-3xl font-bold shadow-lg active:scale-95 transition-transform touch-none"
           >
             ←
           </button>
           <button
             onTouchStart={(e) => { e.preventDefault(); e.stopPropagation(); jump(); }}
-            onClick={(e) => { e.stopPropagation(); jump(); }}
-            className="w-24 h-24 rounded-full bg-accent/80 text-accent-foreground flex items-center justify-center text-xl font-medieval shadow-lg active:scale-95 transition-transform"
+            className="w-24 h-24 rounded-full bg-accent/80 text-accent-foreground flex items-center justify-center text-xl font-medieval shadow-lg active:scale-95 transition-transform touch-none"
           >
             JUMP
           </button>
           <button
             onTouchStart={(e) => { e.preventDefault(); e.stopPropagation(); moveRight(); }}
-            onClick={(e) => { e.stopPropagation(); moveRight(); }}
-            className="w-20 h-20 rounded-full bg-primary/80 text-primary-foreground flex items-center justify-center text-3xl font-bold shadow-lg active:scale-95 transition-transform"
+            className="w-20 h-20 rounded-full bg-primary/80 text-primary-foreground flex items-center justify-center text-3xl font-bold shadow-lg active:scale-95 transition-transform touch-none"
           >
             →
           </button>
